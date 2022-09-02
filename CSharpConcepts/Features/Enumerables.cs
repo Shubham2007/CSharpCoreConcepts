@@ -80,6 +80,7 @@ namespace CSharpConcepts.Features
             DefferedExecution();
             MultipleIteration();
             Log("Enumerable I am:", CapturedContext());
+            Log("Enumerable I am:", CapturedContextExt());
             Log("Collection I am:", CapturedContextReadOnlyCollection());
         }
 
@@ -105,6 +106,8 @@ namespace CSharpConcepts.Features
 
         private static IEnumerable<string> GetValues(int sleepSeconds)
         {
+            //return new List<string>(new string[] { "abs", "aas" });
+
             WriteLine("Getting value1");
             Thread.Sleep(TimeSpan.FromSeconds(sleepSeconds));
             yield return "value1";
@@ -124,23 +127,29 @@ namespace CSharpConcepts.Features
         private static IEnumerable<string> CapturedContext()
         {
             var inputs = new[] { 1, 2, 3 };
-            using (var connectionToDB = new Disp("Alive"))
-            {
-                // Something that is capturing disposable
-                return inputs.Select(item =>
-                    connectionToDB.Value);
-            }
+            using var connectionToDB = new Disp("Alive");
+            // Something that is capturing disposable
+            return inputs.Select(item =>
+                connectionToDB.Value);
             //here disposable has been disposed but iteration has not been started
+        }
+
+        private static IEnumerable<string> CapturedContextExt()
+        {
+            var inputs = new[] { 1, 2, 3 };
+            using var connectionToDB = new Disp("Alive");
+            foreach(int item in inputs)
+            {
+                yield return connectionToDB.Value;
+            }
         }
 
         private static IReadOnlyCollection<string> CapturedContextReadOnlyCollection()
         {
             var inputs = new[] { 1, 2, 3 };
-            using (var connectionToDB = new Disp("Alive"))
-            {
-                return inputs.Select(item =>
-                    connectionToDB.Value).ToList(); //does not compile witout ToList() which forces iteration
-            }
+            using var connectionToDB = new Disp("Alive");
+            return inputs.Select(item =>
+                connectionToDB.Value).ToList(); //does not compile witout ToList() which forces iteration
         }
     }
 }
