@@ -78,6 +78,7 @@ namespace CSharpConcepts.Features
         public static void Issues()
         {
             DefferedExecution();
+            DefferedExecutionExt();
             MultipleIteration();
             Log("Enumerable I am:", CapturedContext());
             Log("Enumerable I am:", CapturedContextExt());
@@ -94,9 +95,19 @@ namespace CSharpConcepts.Features
             Log("deffered", result);
         }
 
+        private static void DefferedExecutionExt()
+        {
+            var values = new[] { "abc", "cde" };
+            var result = values.Select(x => x.Length).ToList();
+            values[0] = "a";
+            Log("deffered", result);
+            values[0] = "ab";
+            Log("deffered", result);
+        }
+
         private static void MultipleIteration()
         {
-            var values = GetValues(1);
+            var values = GetValues(1).ToList();
             var count = values.Count(); // first iteration
             if (count > 0)
             {
