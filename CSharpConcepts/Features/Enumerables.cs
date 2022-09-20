@@ -21,6 +21,7 @@ namespace CSharpConcepts.Features
         {
             var stringValues = string.Join(",", items);
             WriteLine($"{name}: {stringValues}");
+            var stringValues1 = string.Join(",", items);
         }
 
         public static void Syntax()
